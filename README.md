@@ -1,2 +1,2 @@
-# labforward-instriument
+# labforward-instrument
 The core features of our scientific IoT platform are the ability for researchers to easily record, organize, and share their instrument data. The communication between instruments and our IoT platform varies depending on the instrument. Some protocols commonly used by instruments are serial communication protocols, file-based exchange, and network protocols. All methods have in common that a particular communication protocol needs to be implemented in our platform to interact with the device.
