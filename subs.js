@@ -6,56 +6,37 @@ var client = mqtt.connect('mqtt://broker.hivemq.com');
 const hostname = '127.0.0.1';
 const port = 3000;
 
-// const server = http.createServer((req, res) => {
 client.on('connect', function () {
 
-    client.subscribe("driver_command");
+    const readline = require("readline");
 
-    console.log("client has succfully subscribed!!");
 
-    // setInterval(function () {
-    // var rsandom = Math.random();
-    // console.log('Math random funtion: ', random);
+    function input() {
 
-    function publishStableWeight(b) {
-        var random = Math.random();
-        console.log('received command ' + b + 'Math random funtion: ', random);
-        if (random < 0.8000) {
-            client.publish('instrument_data', 'The weight is : ' + (random * 100).toString() + ' gm.')
-        }
-        else if (0.8000 < random < 0.9000) {
-            client.publish('instrument_data', "Command not executable.")
-        }
-        else if (0.9000 < random < 0.9500) {
-            client.publish('instrument_data', "Balance in Underload range.")
-        }
-        else if (0.9500 < random < 0.9900) {
-            client.publish('instrument_data', "Balance in Overload range.");
-        }
-        // }, 3000);
+        var q1 = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+
+        q1.question("Press S for stable weight: ", function (answer) {
+            client.publish('driver_command', `${answer}`)
+            console.log("Interface Closed");
+            q1.close();
+        });
     }
 
-   //publishStableWeight('hello');
-    //publishStableWeight('mellow');
+    input();
+    client.subscribe("instrument_data");
+    console.log("client has succfully subscribed!!");
 
-
-    const topic = 'driver_command';
-
-    client.on('message',function(topic,message){
-        console.log('subscribed message is : '+message.toString());
-    
-        if(message.toString()=="S")
-        publishStableWeight('Sfunction');
+    const topic = 'instrument_data';
+    client.on('message', function (topic, message) {
+        console.log(message.toString());
+        if (message.toString())
+            input();
         else
-        publishStableWeight('Yfunction');
-    
-    
+            input();
     })
 
 
 })
-// });
-
-// server.listen(port, hostname, () => {
-//     console.log(`Server running at http://${hostname}:${port}/`);
-// });
